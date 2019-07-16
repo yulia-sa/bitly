@@ -6,17 +6,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-TOKEN = os.getenv('TOKEN')
+BITLY_GENERIC_ACCESS_TOKEN = os.getenv('BITLY_GENERIC_ACCESS_TOKEN')
 URL_TEMPLATE = 'https://api-ssl.bitly.com/v4/{}'
 
 
-def shorten_link(token, link):
+def shorten_link(BITLY_GENERIC_ACCESS_TOKEN, link):
 
     shorten_link_url = URL_TEMPLATE.format('shorten')
 
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer {}'.format(TOKEN)
+        'Authorization': 'Bearer {}'.format(BITLY_GENERIC_ACCESS_TOKEN)
     }
 
     body = {
@@ -38,14 +38,14 @@ def cut_link_protocol(link):
     return link_without_protocol
 
 
-def count_clicks(token, bitlink):
+def count_clicks(BITLY_GENERIC_ACCESS_TOKEN, bitlink):
     bitlink_without_protocol = cut_link_protocol(bitlink)
     summary_clicks_url = URL_TEMPLATE.format('bitlinks/{}/clicks/summary'
                                         .format(bitlink_without_protocol))
 
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer {}'.format(TOKEN)
+        'Authorization': 'Bearer {}'.format(BITLY_GENERIC_ACCESS_TOKEN)
     }
 
     body = {
@@ -62,30 +62,30 @@ def count_clicks(token, bitlink):
         raise requests.HTTPError(response.text)
 
 
-def print_shorten_link(token, link):
+def print_shorten_link(BITLY_GENERIC_ACCESS_TOKEN, link):
     try:
-        bitlink = shorten_link(TOKEN, link)
+        bitlink = shorten_link(BITLY_GENERIC_ACCESS_TOKEN, link)
     except requests.exceptions.HTTPError as error:
         return print('Возникла ошибка получения короткой ссылки: \n{}.'.format(error))
     return print(bitlink)
 
 
-def print_clicks_count(token, bitlink):
+def print_clicks_count(BITLY_GENERIC_ACCESS_TOKEN, bitlink):
     try:
-        clicks_count = count_clicks(TOKEN, bitlink)
+        clicks_count = count_clicks(BITLY_GENERIC_ACCESS_TOKEN, bitlink)
     except requests.exceptions.HTTPError as error:
         return print('Возникла ошибка подсчёта переходов по ссылке: \n{}.'.format(error))
     return print('Количество переходов по ссылке: {}'.format(clicks_count))
 
 
-def is_bitlink(token, link):
+def is_bitlink(BITLY_GENERIC_ACCESS_TOKEN, link):
 
     bitlink_without_protocol = cut_link_protocol(link)
     retrieve_bitlink_url = URL_TEMPLATE.format('/bitlinks/{}'.format(bitlink_without_protocol))
 
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer {}'.format(TOKEN)
+        'Authorization': 'Bearer {}'.format(BITLY_GENERIC_ACCESS_TOKEN)
     }
 
     response = requests.get(retrieve_bitlink_url, headers=headers)
@@ -113,13 +113,13 @@ def main():
 
         link = args.link
 
-        if is_bitlink(TOKEN, link):
-            print_clicks_count(TOKEN, link)
+        if is_bitlink(BITLY_GENERIC_ACCESS_TOKEN, link):
+            print_clicks_count(BITLY_GENERIC_ACCESS_TOKEN, link)
         else:
-            print_shorten_link(TOKEN, link)
+            print_shorten_link(BITLY_GENERIC_ACCESS_TOKEN, link)
 
     else:
-        print("Не указана ссылка!")
+        exit("Не указана ссылка!")
 
 
 if __name__ == '__main__':
