@@ -98,8 +98,7 @@ def create_parser():
                                                     введена уже сокращенная ссылка.''')
     parser.add_argument('link',
                         help='''Ссылка для сокращения или получения количества переходов 
-                                по уже сокращенной ссылке.''', 
-                        nargs='?')
+                                по уже сокращенной ссылке.''')
  
     return parser
 
@@ -109,17 +108,12 @@ def main():
     parser = create_parser()
     args = parser.parse_args()
 
-    if args.link:
+    link = args.link
 
-        link = args.link
+    if not is_bitlink(BITLY_GENERIC_ACCESS_TOKEN, link):
+        return print_shorten_link(BITLY_GENERIC_ACCESS_TOKEN, link)
 
-        if is_bitlink(BITLY_GENERIC_ACCESS_TOKEN, link):
-            print_clicks_count(BITLY_GENERIC_ACCESS_TOKEN, link)
-        else:
-            print_shorten_link(BITLY_GENERIC_ACCESS_TOKEN, link)
-
-    else:
-        exit("Не указана ссылка!")
+    return print_clicks_count(BITLY_GENERIC_ACCESS_TOKEN, link) 
 
 
 if __name__ == '__main__':
