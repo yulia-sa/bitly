@@ -10,6 +10,7 @@
 ```#!bash
 
 BITLY_GENERIC_ACCESS_TOKEN=полученный_от_bitly_токен
+
 ```
 
 3. Python3 должен быть уже установлен. 
